@@ -76,8 +76,10 @@ var subtotal = {
   },
 };
 var total = 0;
-buy(1);
-buy(1);
+
+// buy(1);
+// buy(1);
+// buy(1);
 // Exercise 1
 // 1. Loop for to the array products to get the item to add to cart
 // 2. Add found product to the cartList array
@@ -91,6 +93,7 @@ function buy(id) {
   // calculateSubtotals();
   // calculateTotal();
   generateCart();
+  applyPromotionsCart();
   //   console.log(cartList);
 }
 
@@ -185,8 +188,24 @@ function generateCart() {
 }
 
 // Exercise 6
+// Apply promotions to each item in the array "cart"
 function applyPromotionsCart() {
-  // Apply promotions to each item in the array "cart"
+  const ten = 10;
+  cart.map(function (item) {
+    switch (item.id) {
+      case 1:
+        if (item.quantity >= 3) {
+          item.subtotalWithDiscount = ten * item.quantity;
+        }
+        break;
+      case 3:
+        if (item.quantity >= 10) {
+          item.subtotalWithDiscount = item.price * item.quantity * 0.66; // 2/3 podría ser 0.66
+        }
+        break;
+    }
+  });
+  // console.log(cart);
 }
 
 // Exercise 7
