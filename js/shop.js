@@ -1,4 +1,5 @@
-// If you have time, you can move this variable "products" to a json file and load the data in this js. It will look more professional
+// If you have time, you can move this variable "products" to a json file
+// and load the data in this js. It will look more professional
 var products = [
   {
     id: 1,
@@ -55,10 +56,13 @@ var products = [
     type: "clothes",
   },
 ];
-// Array with products (objects) added directly with push(). Products in this array are repeated.
+// Array with products (objects) added directly with push(). Products in this
+// array are repeated.
 var cartList = [];
 
-// Improved version of cartList. Cart is an array of products (objects), but each one has a quantity field to define its quantity, so these products are not repeated.
+// Improved version of cartList. Cart is an array of products (objects), but
+// each one has a quantity field to define its quantity, so these products are
+// not repeated.
 var cart = [];
 
 var subtotal = {
@@ -80,6 +84,13 @@ var total = 0;
 // buy(1);
 // buy(1);
 // buy(1);
+// buy(3);
+// buy(2);
+// buy(4);
+// buy(5);
+// removeFromCart(1);
+// printCart();
+
 // Exercise 1
 // 1. Loop for to the array products to get the item to add to cart
 // 2. Add found product to the cartList array
@@ -88,13 +99,12 @@ function buy(id) {
   var valueProd = products.find((prod) => prod.id === id);
   // Afegim el valor a l'array
   // cart.push(valueProd.price);
+
   //   Afegim l'Objecte sencer
   cartList.push(valueProd);
-  // calculateSubtotals();
-  // calculateTotal();
-  generateCart();
-  applyPromotionsCart();
-  //   console.log(cartList);
+
+  addToCart(id);
+  printCart();
 }
 
 // Exercise 2
@@ -105,15 +115,13 @@ function cleanCart() {
     cartList.pop();
     cart.pop();
   }
-  //   console.log(cart);
-  //   console.log(cartList);
 }
 
 // Exercise 3
 // 1. Create a for loop on the "cartList" array
-// 2. Implement inside the loop an if...else or switch...case to add the quantities of each
-// type of product, obtaining the subtotals: subtotalGrocery, subtotalBeauty and subtotalClothes
-
+// 2. Implement inside the loop an if...else or switch...case to add the
+// quantities of each type of product, obtaining the subtotals: subtotalGrocery,
+// subtotalBeauty and subtotalClothes
 function calculateSubtotals() {
   var totalGrocery = 0;
   var totalBeauty = 0;
@@ -158,7 +166,7 @@ function calculateTotal() {
   for (const iterator of cartList) {
     total += iterator.price;
   }
-  console.log(total);
+  return total;
 }
 
 // Exercise 5
@@ -166,12 +174,15 @@ function calculateTotal() {
 // generate the "cart" array that does not contain repeated items, instead each
 //  item of this array "cart" shows the quantity of product.
 function generateCart() {
+  let count = 1;
   cartList.forEach(function (product) {
     var found = false;
+
     cart.forEach(function (item) {
-      if (item.id == product.id) {
-        item.quantity += 1;
+      if (item.id === product.id) {
+        item.quantity = ++count;
         found = true;
+        console.log(count);
       }
     });
     if (!found) {
@@ -181,10 +192,9 @@ function generateCart() {
         price: product.price,
         quantity: 1,
       });
-      return;
     }
   });
-  console.log("function generateCart()", cart);
+  console.log("generateCart=> ", cart);
 }
 
 // Exercise 6
@@ -200,28 +210,97 @@ function applyPromotionsCart() {
         break;
       case 3:
         if (item.quantity >= 10) {
-          item.subtotalWithDiscount = item.price * item.quantity * 0.66; // 2/3 podría ser 0.66
+          item.subtotalWithDiscount = item.price * item.quantity * 0.66;
+          // 2/3 podría ser 0.66
         }
         break;
     }
   });
-  // console.log(cart);
 }
 
 // Exercise 7
+// Refactor previous code in order to simplify it
+// 1. Loop for to the array products to get the item to add to cart
+// 2. Add found product to the cart array or update its quantity
+// in case it has been added previously.
 function addToCart(id) {
-  // Refactor previous code in order to simplify it
-  // 1. Loop for to the array products to get the item to add to cart
-  // 2. Add found product to the cart array or update its quantity in case it has been added previously.
+  products.forEach(function (product) {
+    if (product.id === id) {
+      var exist = false;
+      cart.forEach(function (item) {
+        if (item.id === product.id) {
+          item.quantity += 1;
+          item.subtotal = item.price * item.quantity;
+          exist = true;
+        }
+      });
+      if (!exist) {
+        var addItem = {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          type: product.type,
+          quantity: 1,
+          subtotal: product.price,
+          subtotalWithDiscount: product.price,
+        };
+        cart.push(addItem);
+      }
+    }
+  });
+  console.log("cart => ", cart);
 }
 
 // Exercise 9
+// 1. Loop for to the array products to get the item to add to cart
+// 2. Add found product to the cartList array
 function removeFromCart(id) {
-  // 1. Loop for to the array products to get the item to add to cart
-  // 2. Add found product to the cartList array
+  cart.map((it) => {
+    if (it.id === id) {
+      it.quantity -= 1;
+      it.subtotal = it.price * it.quantity;
+      it.subtotalWithDiscount = it.price * it.quantity;
+      if (it.quantity === 0) {
+        cart.splice(cart.indexOf(it));
+      }
+    }
+  });
+  console.log("removeFromCart=> ", cart);
 }
 
 // Exercise 10
+// Fill the shopping cart modal manipulating the shopping cart dom
 function printCart() {
-  // Fill the shopping cart modal manipulating the shopping cart dom
+  // Mirem si tenim algun descompte
+  applyPromotionsCart();
+
+  // Canviem el titol
+  let changeTitle = document.getElementById("cartModalScrollableTitle");
+  changeTitle.innerHTML = "Basket products:";
+
+  let text = "";
+
+  // Si l'array es buida, dona un missatge... Sino mostra els productes escollits
+  if (cart.length == 0) {
+    text =
+      "<h3 style=text-align:center;=>There are not products in the basket</h3>";
+  }
+  cart.map((item) => {
+    text += `
+      <div class="card p-3 m-4 " style="width:18rem; font-family:fantasy; 
+      text-align:center;background-color: teal; color:white">
+      <h3 class="card-title" style="text-align:center; ">${item.name}</h5>
+      <img class="card-img-top" src="./images/product.svg" alt="Card image cap"
+      style="width:50%; display:block; margin-left:auto; margin-right:auto">
+      <div class="card-body">
+        <h4 class="card-title" style="text-align:center;">Id: ${item.id}</h4>
+        <h5 class="card-text" style="text-align:center;">Type: ${item.type}</h5>
+        <p class="card-text" style="text-align:center;">Products: ${item.quantity}</p>
+        <p class="card-text" style="text-align:center;">Price total: ${item.subtotalWithDiscount}</p>
+        </div>
+    </div>
+    `;
+  });
+  // Incluim el text
+  document.querySelector(".modal-body").innerHTML = text;
 }

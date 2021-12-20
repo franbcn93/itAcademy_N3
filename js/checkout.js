@@ -41,7 +41,12 @@ password.addEventListener("keyup", () => {
 
 // Exercise 8
 // Validate fields entered by the user: name, phone, password, and email
-function validate() {}
+function validate() {
+  validatePhone();
+  validateAddress();
+  emailValidate();
+  passwordValidate();
+}
 // La part del la valicació del NOM y del COGNOM
 function validateName(name, error) {
   if (name.value.length < 3) {

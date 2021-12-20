@@ -11,14 +11,13 @@ body {
 #errorAddress {
   display: none;
 }
-#errorPassword,
+/* #errorPassword,
 #errorPhone,
 #errorName,
 #errorNameLast,
 #errorEmail,
 #errorAddress {
   color: red;
-  /* display: block; */
   padding-left: 40px;
   padding-top: 20px;
-}
+} */
